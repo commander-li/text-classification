@@ -4,63 +4,63 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn import metrics
 
-# Í£ÓÃ´Ê±íµØÖ·
+# åœç”¨è¯è¡¨åœ°å€
 stop_word_path = 'F:/Python/notebook/text classification/stop/stopword.txt'
-# ÑµÁ·¼¯¸ùÄ¿Â¼
+# è®­ç»ƒé›†æ ¹ç›®å½•
 train_base_path = 'F:/Python/notebook/text classification/train/'
-# ²âÊÔ¼¯¸ùÄ¿Â¼
+# æµ‹è¯•é›†æ ¹ç›®å½•
 test_base_path = 'F:/Python/notebook/text classification/test/'
 
-# ÎÄµµÀà±ğ
-train_labels = ['ÌåÓı', 'Å®ĞÔ', 'ÎÄÑ§', 'Ğ£Ô°']
-test_labels = ['ÌåÓı', 'Å®ĞÔ', 'ÎÄÑ§', 'Ğ£Ô°']
+# æ–‡æ¡£ç±»åˆ«
+train_labels = ['ä½“è‚²', 'å¥³æ€§', 'æ–‡å­¦', 'æ ¡å›­']
+test_labels = ['ä½“è‚²', 'å¥³æ€§', 'æ–‡å­¦', 'æ ¡å›­']
 
-def get_data(base_path, labels):   #»ñÈ¡Êı¾İ
+def get_data(base_path, labels):   #è·å–æ•°æ®
     contents = []
-    # ±éÀú¸÷¸öÎÄµµ»ñÈ¡ÎÄ¼şÄÚÈİ
+    # éå†å„ä¸ªæ–‡æ¡£è·å–æ–‡ä»¶å†…å®¹
     for label in labels:
         files = {fileName for fileName in os.listdir(base_path + label)}
         try:
             for fileName in files:
                 file = open(base_path + label + '/' + fileName, encoding='gb18030') 
-                word = jieba.cut(file.read())  #Ê¹ÓÃjieba°ü¶ÔÖĞÎÄÎÄµµ½øĞĞ·Ö´Ê
-                contents.append(' '.join(word))  # ÇĞ´Ê£¬ÓÃ¿Õ¸ñ·Ö¸ô
+                word = jieba.cut(file.read())  #ä½¿ç”¨jiebaåŒ…å¯¹ä¸­æ–‡æ–‡æ¡£è¿›è¡Œåˆ†è¯
+                contents.append(' '.join(word))  # åˆ‡è¯ï¼Œç”¨ç©ºæ ¼åˆ†éš”
         except Exception:
-            print(fileName + 'ÎÄ¼ş¶ÁÈ¡´íÎó')
+            print(fileName + 'æ–‡ä»¶è¯»å–é”™è¯¯')
     return contents
 
-# 1¡¢¶ÔÎÄµµ½øĞĞ·Ö´Ê
-# »ñÈ¡ÑµÁ·¼¯
+# 1ã€å¯¹æ–‡æ¡£è¿›è¡Œåˆ†è¯
+# è·å–è®­ç»ƒé›†
 train_contents = get_data(train_base_path, train_labels)
 # print(train_contents)
-# print('ÑµÁ·¼¯µÄ³¤¶È£º', len(train_contents))
+# print('è®­ç»ƒé›†çš„é•¿åº¦ï¼š', len(train_contents))
 
-# »ñÈ¡²âÊÔ¼¯
+# è·å–æµ‹è¯•é›†
 test_contents = get_data(test_base_path, test_labels)
 # print(test_contents)
-# print('ÑµÁ·¼¯µÄ³¤¶È£º', len(test_contents))
+# print('è®­ç»ƒé›†çš„é•¿åº¦ï¼š', len(test_contents))
 
-# 2¡¢¼ÓÔØÍ£ÓÃ´Ê±í
+# 2ã€åŠ è½½åœç”¨è¯è¡¨
 stop_words = [line.strip() for line in open(stop_word_path, encoding = 'utf-8-sig').readlines()]
 # print(stop_words)
 
-# 3¡¢¼ÆËãµ¥´ÊÈ¨ÖØ
+# 3ã€è®¡ç®—å•è¯æƒé‡
 tf  = TfidfVectorizer(stop_words = stop_words, max_df = 0.5)
 train_features = tf.fit_transform(train_contents)
 
-# 4¡¢Éú³ÉÆÓËØ±´Ò¶Ë¹·ÖÀàÆ÷£¬Ê¹ÓÃ¶àÏîÊ½±´Ò¶Ë¹·ÖÀàÆ÷
-train_labels = ['ÌåÓı'] * 1337 + ['Å®ĞÔ']*954 + ['ÎÄÑ§'] * 766 + ['Ğ£Ô°']*249
-clf = MultinomialNB(alpha = 0.001).fit(train_features, train_labels)  # MultinomialNB.fit(x,y) ÆäÖĞ yµÄÊıÁ¿ÒªµÈÓÚÑµÁ·xµÄÊıÁ¿
+# 4ã€ç”Ÿæˆæœ´ç´ è´å¶æ–¯åˆ†ç±»å™¨ï¼Œä½¿ç”¨å¤šé¡¹å¼è´å¶æ–¯åˆ†ç±»å™¨
+train_labels = ['ä½“è‚²'] * 1337 + ['å¥³æ€§']*954 + ['æ–‡å­¦'] * 766 + ['æ ¡å›­']*249
+clf = MultinomialNB(alpha = 0.001).fit(train_features, train_labels)  # MultinomialNB.fit(x,y) å…¶ä¸­ yçš„æ•°é‡è¦ç­‰äºè®­ç»ƒxçš„æ•°é‡
 
-# 5¡¢Ê¹ÓÃÉú³ÉµÄ·ÖÀàÆ÷×öÔ¤²â
+# 5ã€ä½¿ç”¨ç”Ÿæˆçš„åˆ†ç±»å™¨åšé¢„æµ‹
 test_tf = TfidfVectorizer(stop_words = stop_words, max_df=0.5, vocabulary=tf.vocabulary_)
 test_features = test_tf.fit_transform(test_contents)
 
-# Ô¤²â
+# é¢„æµ‹
 predicted_labels = clf.predict(test_features)
 
-# 6¡¢¼ÆËã×¼È·ÂÊ
-test_labels = ['ÌåÓı']*115 + ['Å®ĞÔ']*38 + ['ÎÄÑ§']*31 + ['Ğ£Ô°']*16
-print('×¼È·ÂÊ', metrics.accuracy_score(test_labels, predicted_labels))
+# 6ã€è®¡ç®—å‡†ç¡®ç‡
+test_labels = ['ä½“è‚²']*115 + ['å¥³æ€§']*38 + ['æ–‡å­¦']*31 + ['æ ¡å›­']*16
+print('å‡†ç¡®ç‡', metrics.accuracy_score(test_labels, predicted_labels))
 
-×¼È·ÂÊ 0.91
+## å‡†ç¡®ç‡ 0.91
